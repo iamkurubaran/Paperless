@@ -24,7 +24,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # tesseract/ghostscript  OCR for scanned PDFs (ocrmypdf)
 # fonts             consistent text rendering in PDFs
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        pandoc \
+        curl \
         tesseract-ocr \
         tesseract-ocr-eng \
         ghostscript \
@@ -39,6 +39,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         fonts-dejavu \
         fonts-liberation \
     && rm -rf /var/lib/apt/lists/*
+
+# Debian bookworm's apt pandoc is 2.17, which predates --embed-resources
+# (added in 2.19). Install a modern release directly from GitHub.
+ARG PANDOC_VERSION=3.6.4
+RUN ARCH="$(dpkg --print-architecture)" \
+    && curl -fsSL -o /tmp/pandoc.deb \
+        "https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-1-${ARCH}.deb" \
+    && dpkg -i /tmp/pandoc.deb \
+    && rm /tmp/pandoc.deb \
+    && pandoc --version
 
 WORKDIR /app
 COPY server/requirements.txt ./
