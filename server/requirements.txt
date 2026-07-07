@@ -1,0 +1,8 @@
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+python-multipart==0.0.20
+weasyprint==63.1
+pdf2docx==0.5.8
+pymupdf4llm==0.0.24
+PyMuPDF==1.25.5
+ocrmypdf==16.10.0

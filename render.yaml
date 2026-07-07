@@ -1,0 +1,21 @@
+# Deploy Paperless to Render (https://render.com)
+#
+# Option A — Blueprint: push this repo to GitHub, then in Render choose
+#   "New +" -> "Blueprint" and point it at the repo. Render reads this file.
+# Option B — Manual: "New +" -> "Web Service" -> pick the repo ->
+#   Runtime: Docker. Render auto-detects the root Dockerfile.
+services:
+  - type: web
+    name: paperless
+    runtime: docker
+    plan: starter          # LibreOffice + WeasyPrint need >512 MB RAM; avoid the free tier
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      # Uncomment to require an X-API-Key header on all /api/* routes
+      # - key: PAPERLESS_API_KEYS
+      #   value: change-me-key-1,change-me-key-2
+      - key: PAPERLESS_RATE_LIMIT
+        value: "120"   # requests per minute per key/IP; 0 disables

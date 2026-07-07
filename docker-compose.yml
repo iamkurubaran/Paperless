@@ -1,0 +1,9 @@
+# Local production-like run:  docker compose up --build
+services:
+  paperless:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+    restart: unless-stopped
